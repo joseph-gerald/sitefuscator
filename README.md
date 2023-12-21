@@ -2,9 +2,9 @@
 Obfuscate basic html and css web pages
 
 ## Demos
-[original (pre)](pre.sf.jooo.tech)
+[original (pre)](https://pre.sf.jooo.tech)
 <br>
-[after obf (post)](pre.sf.jooo.tech)
+[after obf (post)](https://pre.sf.jooo.tech)
 
 # Features
 - [x] Junk Elements (half way done)
