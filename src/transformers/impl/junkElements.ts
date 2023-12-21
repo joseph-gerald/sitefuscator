@@ -11,8 +11,19 @@ export default class extends transformer {
         return "";
     }
 
-    generateJunkElement() {
+    generateJunkElement(noChildren = true, depth = 0) {
         const elm = this.document.createElement(this.settings.mode == "junk" ? this.settings.generator() : this.getRandomElementName);
+        
+        let size = Math.round(this.settings.children.min + (Math.random() * (this.settings.children.max - this.settings.children.min)));
+        
+        if (noChildren && (!depth || depth > this.settings.children.depth)) {
+            return elm;
+        }
+
+        for (size > 0; size--;) {
+            elm.appendChild(this.generateJunkElement(true, 1 + depth));
+        }
+        
         return elm;
     }
 
@@ -28,12 +39,18 @@ export default class extends transformer {
 
             // insert elements before current element
             for (insertBefore > 0; insertBefore--;) {
-                parent.insertBefore(this.generateJunkElement(), elm);
+                parent.insertBefore(this.generateJunkElement(false), elm);
             }
+
+            // insert original element inside junk
+            const junk = this.generateJunkElement(false);
+            junk.appendChild(elm)
+
+            parent.appendChild(junk);
 
             // insert elements after current element
             for (insertAfter > 0; insertAfter--;) {
-                parent.appendChild(this.generateJunkElement());
+                parent.appendChild(this.generateJunkElement(false));
             }
         }
 
