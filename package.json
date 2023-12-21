@@ -1,0 +1,12 @@
+{
+  "name": "sitefuscator",
+  "version": "1.0.0",
+  "description": "Obfuscate basic html and css web pages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
