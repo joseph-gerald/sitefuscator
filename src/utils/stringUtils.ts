@@ -32,7 +32,24 @@ function getMangled() {
     return getMangledAt(Math.round(10000 + Math.random() * 90000))
 }
 
+function calculateChecksum(string: string) {
+    var src = string.toString();
+    var checksum = 0;
+
+    for (var i = 0; i < src.length; i++) {
+        var charCode = src.charCodeAt(i);
+
+        if (charCode != 32) {
+            var result = charCode ^ 24;
+            checksum += result;
+        }
+    }
+
+    return checksum;
+}
+
 export default {
     getMangled,
-    makeNumberString
+    makeNumberString,
+    calculateChecksum
 }

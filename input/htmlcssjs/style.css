@@ -33,7 +33,6 @@ hr {
     background-color: rgb(40,20,50);
     color: white;
     font-weight: bold;
-    border: none;
     border-radius: 3px;
     font-family: inherit;
     font-size: 16px;
@@ -41,6 +40,7 @@ hr {
 
     box-shadow: rgba(50, 30, 60, 0.5) 2px 2px 10px, rgba(40, 20, 50, 0.4) -2px -2px 10px;
 
+    border: none;
     transition-duration: 200ms;
 }
 
@@ -54,12 +54,8 @@ hr {
 
 }
 
-#username {
-
-}
-
-#password {
-
+.field#username {
+    direction: ltr;
 }
 
 #submit {
@@ -80,4 +76,8 @@ hr {
         width: 100%;
         height: auto;
     }
+}
+
+.field #password {
+    direction: ltr;
 }

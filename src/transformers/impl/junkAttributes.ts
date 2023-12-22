@@ -1,10 +1,10 @@
 import { JSDOM } from "jsdom";
 import transformer from "../transformer";
-
+import { CSS } from "../../stylesheet";
 
 export default class extends transformer {
-    constructor(dom: JSDOM, settings: object) {
-        super("Junk Attributes", "Insert junk attributes into the html, heavily bloating the html.", dom, settings);
+    constructor(dom: JSDOM, css: CSS, settings: object) {
+        super("Junk Attributes", "Insert junk attributes into the html, heavily bloating the html.", dom, css, settings);
     }
 
     handle(elm: HTMLElement) {

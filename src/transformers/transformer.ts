@@ -1,5 +1,6 @@
 import { DOMWindow } from "jsdom";
 import { JSDOM } from "jsdom";
+import { CSS } from "../stylesheet";
 
 export default abstract class {
     name: string;
@@ -10,8 +11,9 @@ export default abstract class {
     rootElm: HTMLElement;
 
     settings: any;
+    css: CSS;
 
-    constructor(name: string, description: string, dom: JSDOM, settings: object) {
+    constructor(name: string, description: string, dom: JSDOM, css: CSS, settings: object) {
         this.name = name;
         this.description = description;
 
@@ -20,6 +22,7 @@ export default abstract class {
         this.rootElm = this.document.documentElement;
 
         this.settings = settings;
+        this.css = css;
     }
 
     abstract transform(): void;

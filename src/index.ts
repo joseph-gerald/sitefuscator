@@ -6,13 +6,20 @@ function byteCount(s: any) {
 }
 
 async function init() {
-    const input = fs.readFileSync("input/html/index.html").toString();
+    const html = fs.readFileSync("input/htmlcssjs/index.html").toString();
+    const css = fs.readFileSync("input/htmlcssjs/style.css").toString();
+
+    const input = {
+        html,
+        css 
+    };
 
     let output = await obfuscate(input);
 
-    fs.writeFileSync("output/output.html", output);
+    fs.writeFileSync("output/index.html", output[0]);
+    fs.writeFileSync("output/style.css", output[1]);
 
-    console.log("SIZE: " + byteCount(input) + " -> " + byteCount(output) + " bytes")
+    console.log("SIZE: " + byteCount(html) + " -> " + byteCount(output) + " bytes")
 }
 
 init();

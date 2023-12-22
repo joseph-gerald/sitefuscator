@@ -1,10 +1,10 @@
 import { JSDOM } from "jsdom";
 import transformer from "../transformer";
-
+import { CSS } from "../../stylesheet";
 
 export default class extends transformer {
-    constructor(dom: JSDOM, settings: object) {
-        super("Junk Attributes", "Insert junk attributes into the html, heavily bloating the html.", dom, settings);
+    constructor(dom: JSDOM, css: CSS, settings: object) {
+        super("Junk Attributes", "Insert junk attributes into the html, heavily bloating the html.", dom, css, settings);
     }
 
     getRandomElementName() {
@@ -14,6 +14,8 @@ export default class extends transformer {
     generateJunkElement(noChildren = true, depth = 0) {
         const elm = this.document.createElement(this.settings.mode == "junk" ? this.settings.generator() : this.getRandomElementName);
         
+        elm.style.width = elm.style.height = "100%";
+
         let size = Math.round(this.settings.children.min + (Math.random() * (this.settings.children.max - this.settings.children.min)));
         
         if (noChildren && (!depth || depth > this.settings.children.depth)) {
@@ -34,7 +36,7 @@ export default class extends transformer {
 
         // root elm does not have a parent
         if (parent) {
-            let insertBefore = Math.round(Math.random() * size);
+            let insertBefore = Math.round(Math.random() * (size - 1));
             let insertAfter = size - insertBefore;
 
             // insert elements before current element

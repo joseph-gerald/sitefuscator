@@ -1,20 +1,32 @@
 import { JSDOM } from "jsdom";
+import { CSS } from "./stylesheet";
 import junkAttributes from "./transformers/impl/junkAttributes";
 import stringUtils from "./utils/stringUtils";
 import junkElements from "./transformers/impl/junkElements";
+import styleInliner from "./transformers/impl/styleInliner";
+import * as csstree from 'css-tree';
+
+const disabled = true;
 
 const transformers = [
     {
+        transformer: styleInliner,
+        settings: {
+            removeFromStyleSheet: true
+        }
+    },
+    {
+        disabled,
         transformer: junkElements,
         settings: {
-            min: 4,
-            max: 6,
+            min: 1,
+            max: 1,
             
             // WARNING: gets big fast use with care
             children: {
                 min: 1,
                 max: 2,
-                depth: 4
+                depth: 5
             },
 
             mode: "junk", // junk = garbage elements, spam = spammed real elements but no effect on document
@@ -22,25 +34,31 @@ const transformers = [
         }
     },
     {
+        disabled,
         transformer: junkAttributes,
         settings: {
-            min: 4,
-            max: 6,
+            min: 5,
+            max: 5,
 
             generator: stringUtils.makeNumberString
         }
     },
 ]
 
-export async function obfuscate(input: string) {
-    const dom = new JSDOM(input);
+export async function obfuscate(input: { html: string, css: string }) {
+    const dom = new JSDOM(input.html);
+    const css = new CSS(input.css)
 
     for (const item of transformers) {
-        const transformer = item.transformer;
-        const settings = item.settings;
+        if (item.disabled) continue;
 
-        new transformer(dom, settings).transform();
+        const settings = item.settings;
+        const transformerClass = item.transformer;
+
+        const transformer = new transformerClass(dom, css, settings)
+
+        transformer.transform();
     }
 
-    return dom.serialize();
+    return [dom.serialize(), csstree.generate(css.ast)];
 }
