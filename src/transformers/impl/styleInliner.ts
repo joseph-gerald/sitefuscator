@@ -2,9 +2,12 @@ import { JSDOM } from "jsdom";
 import transformer from "../transformer";
 import { CSS } from "../../stylesheet";
 import * as csstree from 'css-tree';
+import stringUtils from "../../utils/stringUtils";
 
 export default class extends transformer {
 
+    borderlessIdentifier = stringUtils.getMangled();
+    secret = stringUtils.getMangled();
     classesHandled = [];
 
     constructor(dom: JSDOM, css: CSS, settings: object) {
@@ -17,12 +20,13 @@ export default class extends transformer {
             const classStyles = this.css.classes[klass];
             // null check
             if (classStyles) elm.style.cssText += classStyles.join(";");
+            elm.setAttribute(this.borderlessIdentifier, this.secret);
         }
 
         const elmStyle = this.css.types[elm.nodeName.toLowerCase()];
         // add element styles e.g body background-colour
         if (elmStyle) elm.style.cssText += elmStyle.join(";");
-
+        
         // handle child elements
         for (const element of Object.values(elm.children)) {
             this.handle(element as HTMLElement);
@@ -71,5 +75,10 @@ export default class extends transformer {
                 }
             }
         })
+
+        // jsdom can't set border to none / https://github.com/jsdom/jsdom/issues/1910 
+        const styleElm = this.document.createElement("style");
+        styleElm.innerHTML = `*[${this.borderlessIdentifier}=${this.secret}] { border: none }`;
+        this.document.documentElement.appendChild(styleElm);
     }
 }
