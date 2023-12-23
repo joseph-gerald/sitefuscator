@@ -39,12 +39,10 @@ export default class extends transformer {
         // remove inlined styles from style sheet (togglable)
         if (!this.settings.removeFromStyleSheet) return;
 
-        const classes = Object.keys(this.css.classes);
-        let styleSheet: any;
-
         this.css.traverse((node: csstree.CssNode) => {
-            if (node.type == "StyleSheet") styleSheet = node;
             if (node.type == "Rule" && node.prelude.type == "SelectorList") {
+                if (this.css.exemptedNodes.includes(node)) return;
+
                 let selectors = node.prelude.children;
 
                 for (const selector of selectors) {

@@ -14,9 +14,9 @@ class CSS {
     classes: { [key: string]: any; } = {};
     identifiers: { [key: string]: any; } = {};
 
-    constructor(css: string) {
+    exemptedNodes: csstree.CssNode [] = []; // rules in Atrules (@media screen and (max-width ...))
 
-        const exemptedNodes: csstree.CssNode [] = []; // rules in Atrules (@media screen and (max-width ...))
+    constructor(css: string) {
 
         this.ast = csstree.parse(css);
 
@@ -26,12 +26,11 @@ class CSS {
                     const children = node.children;
 
                     for (const child of children) {
-                        if (child.type == "Rule") exemptedNodes.push(child);
+                        if (child.type == "Rule") this.exemptedNodes.push(child);
                     }
                     break;
                 case "Rule":
-
-                    if (exemptedNodes.includes(node)) break;
+                    if (this.exemptedNodes.includes(node)) break;
 
                     if (node.prelude.type == "SelectorList") {
                         let selectors = node.prelude.children;
