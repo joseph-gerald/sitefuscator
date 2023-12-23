@@ -6,10 +6,16 @@ import junkElements from "./transformers/impl/junkElements";
 import styleInliner from "./transformers/impl/styleInliner";
 import * as csstree from 'css-tree';
 import classMangler from "./transformers/impl/classMangler";
+import idMangler from "./transformers/impl/idMangler";
+import junkClasses from "./transformers/impl/junkClasses";
+import junkIds from "./transformers/impl/junkIds";
 
 const disabled = true;
 
 const transformers = [
+
+    /* Identifier Mangling */
+
     {
         transformer: classMangler,
         settings: {
@@ -17,11 +23,38 @@ const transformers = [
         }
     },
     {
+        transformer: idMangler,
+        settings: {
+            generator: stringUtils.getMangled // new identifiers
+        }
+    },
+
+    /* Data Inlining */
+
+    {
         transformer: styleInliner,
         settings: {
             removeFromStyleSheet: true
         }
     },
+
+    /* Junk Data */
+
+    {
+        transformer: junkIds,
+        settings: {
+            generator: stringUtils.getMangled, // new identifiers
+        }
+    },
+    {
+        transformer: junkClasses,
+        settings: {
+            generator: stringUtils.getMangled, // new identifiers
+            min: 2,
+            max: 4,
+        }
+    },
+
     {
         disabled,
         transformer: junkElements,
@@ -40,8 +73,8 @@ const transformers = [
             generator: stringUtils.getMangled // needed for junk element
         }
     },
+
     {
-        disabled,
         transformer: junkAttributes,
         settings: {
             min: 5,

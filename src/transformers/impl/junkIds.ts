@@ -11,18 +11,14 @@ export default class extends transformer {
     generateRandomName(): string {
         const random = this.settings.generator();
 
-        // we don't wanna generate a classname that is used
-        if (this.css.classes[random]) return this.generateRandomName();
+        // we don't wanna generate an identifier that is used
+        if (this.css.identifiers[random]) return this.generateRandomName();
 
         return random;
     }
 
     handle(elm: HTMLElement) {
-        const size = Math.round(this.settings.min + (Math.random() * (this.settings.max - this.settings.min))) - elm.classList.length;
-        
-        for (let i = 0; i < size; i++) {
-            elm.classList.add(this.generateRandomName());
-        }
+        if (!elm.id) elm.id = this.generateRandomName();
 
         // handle child elements
         for (const element of Object.values(elm.children)) {

@@ -4,20 +4,19 @@ import { CSS } from "../../stylesheet";
 import * as csstree from 'css-tree';
 
 export default class extends transformer {
-    classes: { [key: string]: any; } = {};
+    identifiers: { [key: string]: any; } = {};
 
     constructor(dom: JSDOM, css: CSS, settings: object) {
-        super("Class Mangler", "Mangle class names to remove information.", dom, css, settings);
+        super("Identifier Mangler", "Mangle ids to remove information.", dom, css, settings);
     }
 
     handle(elm: HTMLElement) {
-        // iterate through element classes and replace identifiers from map
-        for (const klass of elm.classList) {
-            this.classes[klass] ??= this.settings.generator();
-
-            const newIdentifier = this.classes[klass];
-
-            elm.classList.replace(klass, newIdentifier);
+        if (elm.id) {
+            this.identifiers[elm.id] ??= this.settings.generator();
+    
+            const newIdentifier = this.identifiers[elm.id];
+    
+            elm.id = newIdentifier;
         }
 
         // handle child elements
@@ -42,9 +41,11 @@ export default class extends transformer {
 
                             for (const child of children) {
                                 switch (child.type) {
+                                    // body { ... }
                                     // .class { ... }
-                                    case "ClassSelector":
-                                        if (this.classes[child.name]) child.name = this.classes[child.name];
+                                    // #identifier { ... }
+                                    case "IdSelector":
+                                        if (this.identifiers[child.name]) child.name = this.identifiers[child.name];
                                         break;
                                 }
                             }
@@ -57,6 +58,6 @@ export default class extends transformer {
             }
         })
 
-        return ["classMap.json", JSON.stringify(this.classes)]
+        return ["idMap.json", JSON.stringify(this.identifiers)]
     }
 }

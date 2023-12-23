@@ -19,8 +19,11 @@ export default class extends transformer {
         for (const klass of elm.classList) {
             const classStyles = this.css.classes[klass];
             // null check
-            if (classStyles) elm.style.cssText += classStyles.join(";");
-            elm.setAttribute(this.borderlessIdentifier, this.secret);
+            if (classStyles) {
+                const cssText = classStyles.join(";");
+                elm.style.cssText += cssText;
+                if (cssText.includes("border:none")) elm.setAttribute(this.borderlessIdentifier, this.secret);
+            }
         }
 
         const elmStyle = this.css.types[elm.nodeName.toLowerCase()];
