@@ -4,7 +4,7 @@ import { CSS } from "../../stylesheet";
 
 export default class extends transformer {
     constructor(dom: JSDOM, css: CSS, settings: object) {
-        super("Junk Attributes", "Insert junk attributes into the html, heavily bloating the html.", dom, css, settings);
+        super("Junk Elements", "Insert elements into the html, heavily bloating the html.", dom, css, settings);
     }
 
     getRandomElementName() {
@@ -14,8 +14,6 @@ export default class extends transformer {
     generateJunkElement(noChildren = true, depth = 0) {
         const elm = this.document.createElement(this.settings.mode == "junk" ? this.settings.generator() : this.getRandomElementName);
         
-        elm.style.width = elm.style.height = "100%";
-
         let size = Math.round(this.settings.children.min + (Math.random() * (this.settings.children.max - this.settings.children.min)));
         
         if (noChildren && (!depth || depth > this.settings.children.depth)) {
@@ -41,18 +39,37 @@ export default class extends transformer {
 
             // insert elements before current element
             for (insertBefore > 0; insertBefore--;) {
-                parent.insertBefore(this.generateJunkElement(false), elm);
+                parent.insertBefore(this.generateJunkElement(true), elm);
             }
 
             // insert original element inside junk
             const junk = this.generateJunkElement(false);
-            junk.appendChild(elm)
+            
+            let prnt = junk;
+            let children = parent.children;
 
+            while (children.length > 0) {
+                const oldParent = prnt;
+
+                prnt = children[0];
+                children = prnt.children;
+
+                for (const child of children) {
+                    if (child.children.length > children.length) {
+                        prnt = child;
+                        children = prnt.children;
+                    }
+                }
+
+                if(children.length == 0) prnt = oldParent;
+            }
+
+            junk.appendChild(elm);
             parent.appendChild(junk);
 
             // insert elements after current element
             for (insertAfter > 0; insertAfter--;) {
-                parent.appendChild(this.generateJunkElement(false));
+                parent.appendChild(this.generateJunkElement(true));
             }
         }
 

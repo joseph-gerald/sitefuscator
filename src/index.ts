@@ -11,13 +11,19 @@ async function init() {
 
     const input = {
         html,
-        css 
+        css
     };
 
     let output = await obfuscate(input);
 
     fs.writeFileSync("output/index.html", output[0]);
     fs.writeFileSync("output/style.css", output[1]);
+
+    const data = JSON.parse(output[2]);
+
+    for (const info of data) {
+        fs.writeFileSync(`output/data/${info[0]}`, info[1]);
+    }
 
     console.log("SIZE: " + byteCount(html) + " -> " + byteCount(output) + " bytes")
 }

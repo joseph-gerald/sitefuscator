@@ -17,9 +17,11 @@ class CSS {
     exemptedNodes: csstree.CssNode [] = []; // rules in Atrules (@media screen and (max-width ...))
 
     constructor(css: string) {
-
         this.ast = csstree.parse(css);
+        this.parse();
+    }
 
+    parse() {
         this.traverse((node: csstree.CssNode, options: csstree.ListItem<csstree.CssNode>) => {
             switch (node.type) {
                 case "Block":

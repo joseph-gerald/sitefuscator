@@ -5,10 +5,17 @@ import stringUtils from "./utils/stringUtils";
 import junkElements from "./transformers/impl/junkElements";
 import styleInliner from "./transformers/impl/styleInliner";
 import * as csstree from 'css-tree';
+import classMangler from "./transformers/impl/classMangler";
 
 const disabled = true;
 
 const transformers = [
+    {
+        transformer: classMangler,
+        settings: {
+            generator: stringUtils.getMangled // new identifiers
+        }
+    },
     {
         transformer: styleInliner,
         settings: {
@@ -20,13 +27,13 @@ const transformers = [
         transformer: junkElements,
         settings: {
             min: 1,
-            max: 1,
+            max: 10,
             
             // WARNING: gets big fast use with care
             children: {
                 min: 1,
                 max: 2,
-                depth: 5
+                depth: 4
             },
 
             mode: "junk", // junk = garbage elements, spam = spammed real elements but no effect on document
@@ -48,8 +55,10 @@ const transformers = [
 export async function obfuscate(input: { html: string, css: string }) {
     const dom = new JSDOM(input.html);
     const css = new CSS(input.css)
+    const data: string[][] = [];
 
     for (const item of transformers) {
+        // @ts-ignore
         if (item.disabled) continue;
 
         const settings = item.settings;
@@ -57,8 +66,13 @@ export async function obfuscate(input: { html: string, css: string }) {
 
         const transformer = new transformerClass(dom, css, settings)
 
-        transformer.transform();
+        console.log(`Starting ${transformer.name} / ${transformer.description}`)
+
+        const info = transformer.transform();
+        transformer.css.parse();
+
+        if(info) data.push(info);
     }
 
-    return [dom.serialize(), csstree.generate(css.ast)];
+    return [dom.serialize(), csstree.generate(css.ast), JSON.stringify(data)];
 }

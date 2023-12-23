@@ -44,6 +44,10 @@ hr {
     transition-duration: 200ms;
 }
 
+input {
+    width: 100%;
+}
+
 .field:focus {
     outline: none;
     background-color: rgb(55,35,65);
