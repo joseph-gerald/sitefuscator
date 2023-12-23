@@ -1,9 +1,14 @@
 # Sitefuscator
 Obfuscate basic html and css web pages
 
+## Demos
+[original (pre)](https://pre.sf.jooo.tech)
+<br>
+[after obf (post)](https://post.sf.jooo.tech)
+
 # Features
-- [ ] Junk Elements
-- [ ] Junk Attributes
+- [x] Junk Elements (half way done)
+- [x] Junk Attributes
       
 - [ ] Class name mangling
 - [ ] Element ID mangling
