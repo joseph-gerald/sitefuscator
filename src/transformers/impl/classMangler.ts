@@ -13,6 +13,8 @@ export default class extends transformer {
     handle(elm: HTMLElement) {
         // iterate through element classes and replace identifiers from map
         for (const klass of elm.classList) {
+            if (!this.css.classes[klass]) continue;
+
             this.classes[klass] ??= this.settings.generator();
 
             const newIdentifier = this.classes[klass];
