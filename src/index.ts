@@ -7,8 +7,8 @@ function byteCount(s: any) {
 }
 
 async function init() {
-    const html = fs.readFileSync("input/htmlcssjs/index.html").toString();
-    const css = fs.readFileSync("input/htmlcssjs/style.css").toString();
+    const html = fs.readFileSync("input/portfolio/index.html").toString();
+    const css = fs.readFileSync("input/portfolio/style.css").toString();
     const js = fs.readFileSync("input/htmlcssjs/script.js").toString();
 
     const input = {
@@ -28,8 +28,9 @@ async function init() {
     for (const info of data) {
         fs.writeFileSync(`output/data/${info[0]}`, info[1]);
 
-        if (info[0] == "idMap.json") {
-            fs.writeFileSync("output/script.js", updateJavascript(js, JSON.parse(info[1])));
+        // update js loaded
+        if ("idMap.json classMap.json".split(" ").includes(info[0])) {
+            fs.writeFileSync("output/script.js", updateJavascript(js, info[0], JSON.parse(info[1])));
         }
     }
 

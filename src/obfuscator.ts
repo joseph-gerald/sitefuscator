@@ -9,6 +9,7 @@ import classMangler from "./transformers/impl/classMangler";
 import idMangler from "./transformers/impl/idMangler";
 import junkClasses from "./transformers/impl/junkClasses";
 import junkIds from "./transformers/impl/junkIds";
+import refrenceUpdater from "./transformers/impl/refrenceUpdater";
 
 const disabled = true;
 
@@ -46,6 +47,7 @@ const transformers = [
             generator: stringUtils.getMangled, // new identifiers
         }
     },
+
     {
         transformer: junkClasses,
         settings: {
@@ -56,17 +58,16 @@ const transformers = [
     },
 
     {
-        disabled,
         transformer: junkElements,
         settings: {
-            min: 1,
-            max: 10,
+            min: 2,
+            max: 2,
             
-            // WARNING: gets big fast use with care
+            // WARNING: gets big fast use carefully
             children: {
-                min: 1,
-                max: 2,
-                depth: 4
+                min: 0,
+                max: 0,
+                depth: 0
             },
 
             mode: "junk", // junk = garbage elements, spam = spammed real elements but no effect on document
@@ -83,19 +84,28 @@ const transformers = [
             generator: stringUtils.makeNumberString
         }
     },
+
+    {
+        transformer: refrenceUpdater,
+        settings: {
+            generator: stringUtils.makeNumberString
+        }
+    },
 ]
 
 export async function obfuscate(input: { html: string, css: string }) {
     const dom = new JSDOM(input.html);
     const css = new CSS(input.css)
-    const data: string[][] = [];
+    const data: { [key: string]: any } = [];
 
     for (const item of transformers) {
         // @ts-ignore
         if (item.disabled) continue;
 
-        const settings = item.settings;
+        const settings = { ...item.settings, data };
         const transformerClass = item.transformer;
+
+        console.log(`Initializing transformer`)
 
         const transformer = new transformerClass(dom, css, settings)
 
@@ -104,7 +114,7 @@ export async function obfuscate(input: { html: string, css: string }) {
         const info = transformer.transform();
         transformer.css.parse();
 
-        if(info) data.push(info);
+        if(info) data[info[0]] = info[1];
     }
 
     return [dom.serialize(), csstree.generate(css.ast), JSON.stringify(data)];

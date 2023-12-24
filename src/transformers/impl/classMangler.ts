@@ -46,13 +46,14 @@ export default class extends transformer {
                                 switch (child.type) {
                                     // .class { ... }
                                     case "ClassSelector":
+                                        //console.log(child.name, !!this.classes[child.name])
                                         if (this.classes[child.name]) child.name = this.classes[child.name];
                                         break;
+                                    default:
+                                        //console.warn(child.type + " not implemented!", child);
                                 }
                             }
                             break;
-                        default:
-                            console.warn(selector.type + " not implemented!");
 
                     }
                 }

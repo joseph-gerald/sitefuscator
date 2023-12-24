@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="icon.png">
+    <title>Joseph Gerald</title>
+    <script>
+        function addItem(data, parent) {
+            const elm = document.createElement("li");
+            elm.classList += "item"
+            elm.innerHTML = `
+                <img src="https://skillicons.dev/icons?i=${data.shift()}" width="30px">
+                <p>${data.shift()}</p>
+            `
+            parent.appendChild(elm)
+        }
+
+        function addItems(data, id) {
+            const elm = document.getElementById(id);
+            for (const item of data) {
+                addItem(item, elm)
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="grid">
+        <div class="tile" id="tile-1">
+            <svg id="icon" xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24">
+                <g fill="none">
+                    <path d="M0 0h24v24H0z" />
+                    <path fill="currentColor"
+                        d="M14.486 3.143a1 1 0 0 1 .692 1.233l-4.43 15.788a1 1 0 0 1-1.926-.54l4.43-15.788a1 1 0 0 1 1.234-.693ZM7.207 7.05a1 1 0 0 1 0 1.414L3.672 12l3.535 3.535a1 1 0 1 1-1.414 1.415L1.55 12.707a1 1 0 0 1 0-1.414L5.793 7.05a1 1 0 0 1 1.414 0Zm9.586 1.414a1 1 0 1 1 1.414-1.414l4.243 4.243a1 1 0 0 1 0 1.414l-4.243 4.243a1 1 0 0 1-1.414-1.415L20.328 12l-3.535-3.536Z" />
+                </g>
+            </svg>
+            <h1 id="name">Joseph Gerald</h1>
+            <h4 id="location">Viken, Norway</h4>
+            <div class="socials">
+                <a href="https://github.com/joseph-gerald" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 16 16">
+                        <path fill="currentColor"
+                            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59c.4.07.55-.17.55-.38c0-.19-.01-.82-.01-1.49c-2.01.37-2.53-.49-2.69-.94c-.09-.23-.48-.94-.82-1.13c-.28-.15-.68-.52-.01-.53c.63-.01 1.08.58 1.23.82c.72 1.21 1.87.87 2.33.66c.07-.52.28-.87.51-1.07c-1.78-.2-3.64-.89-3.64-3.95c0-.87.31-1.59.82-2.15c-.08-.2-.36-1.02.08-2.12c0 0 .67-.21 2.2.82c.64-.18 1.32-.27 2-.27c.68 0 1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82c.44 1.1.16 1.92.08 2.12c.51.56.82 1.27.82 2.15c0 3.07-1.87 3.75-3.65 3.95c.29.25.54.73.54 1.48c0 1.07-.01 1.93-.01 2.2c0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="tile" id="tile-2">
+            <div id="tile-2-content">
+                <section>
+                    <h2>About Me</h2>
+                    <p>Hello, I'm a full-stack developer based in Norway 🇳🇴!</p>
+                </section>
+                <section>
+                    <h2>Experience</h2>
+                    <p>
+                        Since 2021, I have built websites, backends and everything in between.
+                        <br>
+                        Dabbled with JavaScript AST and code obfuscation techniques.
+                    </p>
+                </section>
+                <section>
+                    <h2>Skills</h2>
+                    <ul id="skills">
+                        <li>
+                            <b>Languages</b>
+                            <ul class="list" id="langs">
+
+                            </ul>
+                        </li>
+                        <li>
+                            <b>Frameworks</b>
+                            <ul class="list" id="frameworks">
+
+                            </ul>
+
+                            <b>Others</b>
+                            <ul class="list" id="others">
+
+                            </ul>
+                        </li>
+                        <li>
+                            <b>Want To Learn</b>
+                            <ul class="list" id="todo">
+
+                            </ul>
+
+                            <b>Tools</b>
+                            <ul class="list" id="tools">
+
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Projects</h2>
+                    <ul class="list projects">
+                        <li>
+                            <a href="https://github.com/joseph-gerald/data-app-base" target="_blank">Data App Base
+                                (DAB)</a>
+                            <p>
+                                Simple and easy to use base for data applications
+                            </p>
+                        </li>
+                        <li>
+                            <a href="https://github.com/joseph-gerald/py-gulesider" target="_blank">Py-Gulesider</a>
+                            Python Wrapper for Gulesider used in my flask api
+                            <span></span>
+                            <a href="https://api.jooo.tech/gs/search/person?q=Arad%20Asgari" target="_blank">
+                                (api demo)
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://osint.thisisadomain.lol/" target="_blank">OSINT Base</a>
+                            <p>
+                                Perform OSINT (as of now only using gulesider api) through
+                                <a href="https://github.com/joseph-gerald/data-app-base" target="_blank">DAB</a>
+                            </p>
+                        </li>
+                        <li>
+                            <a href="https://detect.thisisadomain.lol/" target="_blank">AI Detectur</a>
+                            <p>
+                                Intuitively combines a plethora of detectors into one using<span
+                                    style="margin: 2px;"></span>
+                                <a href="https://github.com/joseph-gerald/data-app-base" target="_blank">DAB</a>
+                            </p>
+                        </li>
+                        <li>
+                            <a href="https://github.com/joseph-gerald/JSVM" target="_blank">JSVM</a>
+                            <p>
+                                WIP javascript transpiler and vm for strengthening obfuscation
+                            </p>
+                        </li>
+                        <li>
+                            <a href="https://github.com/joseph-gerald/PutYourHeartIntoIt"
+                                target="_blank">PutYourHeartIntoIt</a>
+                            <p>
+                                Plays one of your playlists based on your BPM
+                            </p>
+                        </li>
+                        <li>
+                            <a href="https://github.com/joseph-gerald/KongsberGuessr" target="_blank">KongsberGuessr</a>
+                            <p>
+                                GeoGeussr esque game for school assignment
+                            </p>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Contact</h2>
+                    <p>
+                        <a href="mailto:contact@jooo.tech">
+                            contact@jooo.tech
+                        </a>
+                    </p>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="loading-card" hidden>
+        <h1 class="loading-title">
+            <script>
+                function shuffleArray(array) {
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [array[i], array[j]] = [array[j], array[i]];
+                    }
+                    return array;
+                }
+                const lines = shuffleArray([
+                    "Stalling",
+                    "Spinning...",
+                    "Just A Moment",
+                    "No Internet... jk",
+                    "🔗 to " + location.hostname,
+                    "Forging SSL Certificate",
+                    "Wait",
+                    "Be Patient",
+                    "Loading.. Stuff",
+                    "3-2-1 Action",
+                    "One second",
+                    "Please wait",
+                    "BEEP...  BOOP... DONE",
+                    "Hello World",
+                    "Cooking...",
+                    "Generating Content",
+                    "Fetching Assets",
+                    "3.. 2.. 1.. Take Off",
+                    "Styling the style sheet"
+                ]); // double shuffling for double randomenss (trust)
+                document.querySelector(".loading-title").innerHTML = lines[Math.floor(Math.random() * lines.length)];
+            </script>
+        </h1>
+    </div>
+</body>
+<script>
+    const loadingCard = document.querySelector(".loading-card");
+    window.addEventListener('load', () => {
+        loadingCard.classList.add("slide-out");
+        setTimeout(function () {
+            loadingCard.remove();
+        }, 750);
+    });
+
+    addItems([
+        ["ts", "TypeScript"],
+        ["js", "Javascript"],
+        ["html", "HTML"],
+        ["css", "CSS"],
+        ["py", "Python"],
+        ["java", "Java"],
+    ], "langs");
+    addItems([
+        ["flask", "Flask"],
+        ["express", "Express"],
+        ["tailwindcss", "Tailwind"],
+    ], "frameworks");
+    addItems([
+        ["mongodb", "MongoDB"],
+        ["selenium", "Selenium"],
+    ], "others");
+    addItems([
+        ["rust", "Rust"],
+        ["tensorflow", "Tensorflow"],
+        ["react", "React"],
+    ], "todo");
+    addItems([
+        ["git", "Git"],
+        ["github", "Github"],
+    ], "tools");
+</script>
+
+</html>

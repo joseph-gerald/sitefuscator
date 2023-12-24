@@ -1,11 +1,11 @@
 import { JSDOM } from "jsdom";
 import transformer from "../transformer";
 import { CSS } from "../../stylesheet";
-import * as csstree from 'css-tree';
+import { updateJavascript } from "../../postProcessor";
 
 export default class extends transformer {
     constructor(dom: JSDOM, css: CSS, settings: object) {
-        super("Junk IDs", "Add junk IDs to decrease HTML legibility.", dom, css, settings);
+        super("Refrence Updater", "Update class and id refrences in HTML <script> tags.", dom, css, settings);
     }
 
     generateRandomName(): string {
@@ -18,7 +18,11 @@ export default class extends transformer {
     }
 
     handle(elm: HTMLElement) {
-        if (!elm.id) elm.id = this.generateRandomName();
+        if (elm.tagName == "SCRIPT") {
+            for (const [mapName, map] of Object.entries(this.settings.data)) {
+                elm.innerHTML = updateJavascript(elm.innerHTML, mapName, JSON.parse(map as string))
+            }
+        }
 
         // handle child elements
         for (const element of Object.values(elm.children)) {
