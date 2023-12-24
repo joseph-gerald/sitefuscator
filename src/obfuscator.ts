@@ -10,87 +10,84 @@ import idMangler from "./transformers/impl/idMangler";
 import junkClasses from "./transformers/impl/junkClasses";
 import junkIds from "./transformers/impl/junkIds";
 import refrenceUpdater from "./transformers/impl/refrenceUpdater";
+import bundleToLoader from "./transformers/impl/bundleToLoader";
 
 const disabled = true;
+
+class Transformer {
+
+    disabled;
+    transformer;
+    settings;
+
+    constructor(transformer: any, settings = {}, disabled = false) {
+        this.transformer = transformer;
+        this.settings = settings;
+        this.disabled = disabled;
+    }
+}
 
 const transformers = [
 
     /* Identifier Mangling */
 
-    {
-        transformer: classMangler,
-        settings: {
-            generator: stringUtils.getMangled // new identifiers
-        }
-    },
-    {
-        transformer: idMangler,
-        settings: {
-            generator: stringUtils.getMangled // new identifiers
-        }
-    },
+    new Transformer(classMangler, {
+        generator: stringUtils.getMangled // new identifiers
+    }),
+
+    new Transformer(idMangler, {
+        generator: stringUtils.getMangled // new identifiers
+    }),
 
     /* Data Inlining */
 
-    {
-        transformer: styleInliner,
-        settings: {
-            removeFromStyleSheet: true
-        }
-    },
+    new Transformer(styleInliner, {
+        removeFromStyleSheet: true
+    }),
 
     /* Junk Data */
 
-    {
-        transformer: junkIds,
-        settings: {
-            generator: stringUtils.getMangled, // new identifiers
-        }
-    },
 
-    {
-        transformer: junkClasses,
-        settings: {
-            generator: stringUtils.getMangled, // new identifiers
-            min: 2,
-            max: 4,
-        }
-    },
+    new Transformer(junkIds, {
+        generator: stringUtils.getMangled, // new identifiers
+    }),
 
-    {
-        transformer: junkElements,
-        settings: {
-            min: 2,
-            max: 2,
-            
-            // WARNING: gets big fast use carefully
-            children: {
-                min: 0,
-                max: 0,
-                depth: 0
-            },
+    new Transformer(junkClasses, {
+        generator: stringUtils.getMangled, // new identifiers
+        min: 2,
+        max: 4,
+    }),
 
-            mode: "junk", // junk = garbage elements, spam = spammed real elements but no effect on document
-            generator: stringUtils.getMangled // needed for junk element
-        }
-    },
+    new Transformer(junkElements, {
+        min: 2,
+        max: 2,
+        
+        // WARNING: gets big fast use carefully
+        children: {
+            min: 0,
+            max: 0,
+            depth: 0
+        },
 
-    {
-        transformer: junkAttributes,
-        settings: {
-            min: 5,
-            max: 5,
+        mode: "junk", // junk = garbage elements, spam = spammed real elements but no effect on document
+        generator: stringUtils.getMangled // needed for junk element
+    }),
 
-            generator: stringUtils.makeNumberString
-        }
-    },
+    new Transformer(junkAttributes, {
+        min: 5,
+        max: 5,
 
-    {
-        transformer: refrenceUpdater,
-        settings: {
-            generator: stringUtils.makeNumberString
-        }
-    },
+        generator: stringUtils.makeNumberString
+    }),
+
+    new Transformer(refrenceUpdater, {
+        generator: stringUtils.makeNumberString
+    }),
+
+    // Finalising
+
+
+    new Transformer(bundleToLoader),
 ]
 
 export async function obfuscate(input: { html: string, css: string }) {
@@ -104,8 +101,6 @@ export async function obfuscate(input: { html: string, css: string }) {
 
         const settings = { ...item.settings, data };
         const transformerClass = item.transformer;
-
-        console.log(`Initializing transformer`)
 
         const transformer = new transformerClass(dom, css, settings)
 

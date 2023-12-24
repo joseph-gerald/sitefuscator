@@ -16,9 +16,11 @@ async function init() {
         css
     };
 
+    console.log("\nStarting Obfuscator\n")
+
     let output = await obfuscate(input);
 
-
+    console.log("\nSIZE: " + byteCount(html) + " -> " + byteCount(output) + " bytes\n")
 
     fs.writeFileSync("output/index.html", output[0]);
     fs.writeFileSync("output/style.css", output[1]);
@@ -33,8 +35,6 @@ async function init() {
             fs.writeFileSync("output/script.js", updateJavascript(js, info[0], JSON.parse(info[1])));
         }
     }
-
-    console.log("SIZE: " + byteCount(html) + " -> " + byteCount(output) + " bytes")
 }
 
 init();

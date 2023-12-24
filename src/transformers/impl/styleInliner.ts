@@ -67,7 +67,7 @@ export default class extends transformer {
 
                 const selector = csstree.generate(node.prelude);
 
-                if (this.rulesHandled.includes(selector)) return;
+                if (!this.rulesHandled.includes(selector)) return;
 
                 let selectors = node.prelude.children;
 

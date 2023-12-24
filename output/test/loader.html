@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+</head>
+
+<body>
+    <div id="sitefuscator-loading-cover"
+        style="position: fixed; display: flex; align-items: center; justify-content: center; height: 100vh; width: 100vw; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <h1>
+            Loading
+        </h1>
+    </div>
+    <script>
+        const loadingCover = document.getElementById("sitefuscator-loading-cover");
+        const body = document.body;
+
+        const data = {
+            tag: "h1",
+            props: {
+                textContent: "Hello",
+                style: "color: blue"
+            },
+            attributes: {
+                hello: "world"
+            },
+            children: [
+                {
+                    tag: "h1",
+                    props: {
+                        textContent: "Hello"
+                    },
+                    attributes: {
+                        hello: "world"
+                    },
+                }
+            ]
+        }
+
+        function handle(data, parent) {
+            const tagName = data.tag;
+            const elm = document.createElement(tagName);
+
+            for (const [prop, value] of Object.entries(data.props)) {
+                elm[prop] = value;
+            }
+
+            if (data.attributes) {
+                for (const [attribute, value] of Object.entries(data.attributes)) {
+                    elm.setAttribute(attribute, value);
+                }
+            }
+
+            if (data.children) {
+                for (const child of data.children) {
+                    elm.appendChild(handle(child));
+                }
+            }
+
+            return elm;
+        }
+
+        body.appendChild(handle(data));
+
+        loadingCover.remove();
+    </script>
+</body>
+
+</html>
