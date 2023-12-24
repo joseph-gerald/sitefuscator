@@ -10,8 +10,8 @@ Obfuscate basic html and css web pages
 - [x] Junk Elements (half way done)
 - [x] Junk Attributes
       
-- [ ] Class name mangling
-- [ ] Element ID mangling
+- [x] Class name mangling
+- [x] Element ID mangling
       
 - [ ] Self defending
 - [ ] Resource Encryption
