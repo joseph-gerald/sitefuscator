@@ -31,6 +31,61 @@ const transformers = [
 
     /* Identifier Mangling */
 
+    new Transformer(classMangler, {
+        generator: stringUtils.getMangled // new identifiers
+    }),
+
+    new Transformer(idMangler, {
+        generator: stringUtils.getMangled // new identifiers
+    }),
+
+    /* Data Inlining */
+
+    new Transformer(styleInliner, {
+        removeFromStyleSheet: true
+    }),
+
+    /* Junk Data */
+
+
+    new Transformer(junkIds, {
+        generator: stringUtils.getMangled, // new identifiers
+    }),
+
+    new Transformer(junkClasses, {
+        generator: stringUtils.getMangled, // new identifiers
+        min: 2,
+        max: 4,
+    }),
+
+    new Transformer(junkElements, {
+        min: 2,
+        max: 2,
+        
+        // WARNING: gets big fast use carefully
+        children: {
+            min: 0,
+            max: 0,
+            depth: 0
+        },
+
+        mode: "junk", // junk = garbage elements, spam = spammed real elements but no effect on document
+        generator: stringUtils.getMangled // needed for junk element
+    }),
+
+    new Transformer(junkAttributes, {
+        min: 5,
+        max: 5,
+
+        generator: stringUtils.makeNumberString
+    }),
+
+    new Transformer(refrenceUpdater, {
+        generator: stringUtils.makeNumberString
+    }),
+
+    // Finalising
+
 
     new Transformer(bundleToLoader),
 ]
