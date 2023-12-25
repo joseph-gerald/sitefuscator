@@ -39,12 +39,6 @@ const transformers = [
         generator: stringUtils.getMangled // new identifiers
     }),
 
-    /* Data Inlining */
-
-    new Transformer(styleInliner, {
-        removeFromStyleSheet: true
-    }),
-
     /* Junk Data */
 
 
@@ -80,15 +74,15 @@ const transformers = [
         generator: stringUtils.makeNumberString
     }),
 
+    // Finalising
+
     new Transformer(refrenceUpdater, {
         generator: stringUtils.makeNumberString
     }),
 
-    // Finalising
-
 
     new Transformer(bundleToLoader, {
-        minify: true,
+        minify: false,
         obfuscate: false
     }),
 ]
@@ -109,7 +103,7 @@ export async function obfuscate(input: { html: string, css: string }) {
 
         console.log(`Starting ${transformer.name} / ${transformer.description}`)
 
-        const info = transformer.transform();
+        const info = await transformer.transform();
         transformer.css.parse();
 
         if(info) data[info[0]] = info[1];

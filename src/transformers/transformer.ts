@@ -25,5 +25,5 @@ export default abstract class {
         this.css = css;
     }
 
-    abstract transform(): string[] | void;
+    abstract transform(): string[] | void | Promise<void>;
 }

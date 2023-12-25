@@ -9,13 +9,14 @@ function byteCount(s: any) {
 }
 
 async function init() {
-    /*
     const html = fs.readFileSync("input/portfolio/index.html").toString();
     const css = fs.readFileSync("input/portfolio/style.css").toString();
-*/
 
+
+    /*
     const html = fs.readFileSync("input/htmlcssjs/index.html").toString();
     const css = fs.readFileSync("input/htmlcssjs/style.css").toString();
+    */
     const js = fs.readFileSync("input/htmlcssjs/script.js").toString();
 
     const input = {

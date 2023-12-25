@@ -1,11 +1,17 @@
 import { JSDOM } from "jsdom";
 import transformer from "../transformer";
 import { CSS } from "../../stylesheet";
-import * as csstree from 'css-tree';
+import { minify } from "terser";
+import stringUtils from "../../utils/stringUtils";
 
 export default class extends transformer {
     identifiers: { [key: string]: any; } = {};
     data: any = {};
+    scriptElements: HTMLElement[] = [];
+    
+    secrets: any = {
+        br: stringUtils.getMangled()
+    }
 
     constructor(dom: JSDOM, css: CSS, settings: object) {
         super("Bundler", "Bundle and export your HTML into a fast and secure JavaScript unpacker.", dom, css, settings);
@@ -18,7 +24,10 @@ export default class extends transformer {
         let innerHTML = elm.innerHTML;
 
         for (const child of elm.children) {
-            innerHTML = innerHTML.replace(child.outerHTML, "");
+            if(child.tagName != "BR") innerHTML = innerHTML.replace(child.outerHTML, "");
+            else {
+                innerHTML = innerHTML.replace(child.outerHTML, this.secrets.br);
+            }
         }
 
         for (const attr of elm.attributes) attributes[attr.name] = attr.value;
@@ -29,13 +38,38 @@ export default class extends transformer {
                 textContent: innerHTML
             },
             attributes,
-            children: children
         }
+
+        if (children.length > 0) data.children = children;
 
         return data;
     }
 
-    transform(): void {
+    scriptIterator(element: HTMLElement) {
+        if (element.tagName == "SCRIPT") {
+            this.scriptElements.push(element);
+        }
+
+        for (const child of element.children) {
+            this.scriptIterator(child as HTMLElement);
+        }
+
+    }
+
+    handleScripts(rootElm: HTMLElement) {
+        this.scriptIterator(rootElm);
+
+        // Reverse hoist? script elements to bottom
+        for (const script of this.scriptElements) {
+            script.remove();
+            this.rootElm.appendChild(script);
+        }
+    }
+
+    transform(): Promise<any> {
+
+        this.handleScripts(this.rootElm);
+
         this.data = this.handle(this.rootElm, "root/");
 
         const loadingCoverHTML = `
@@ -47,19 +81,20 @@ export default class extends transformer {
         </div>
         `
 
-        this.document.documentElement.innerHTML = `
-<html>
-    <head>
-        <title>Loading...</title>
-        ${loadingCoverHTML}
-        <script>
-            const rootElm = document.documentElement;
+        const script = `
+        const rootElm = document.documentElement;
 
             const data = ${JSON.stringify(this.data)};
+
+            const scripts = [];
 
             function handle(data, parent) {
                 const tagName = data.tag;
                 const elm = document.createElement(tagName);
+
+                if (tagName == "SCRIPT") {
+                    scripts.push(data.props.textContent)
+                }
 
                 for (const [prop, value] of Object.entries(data.props)) {
                     elm[prop] = value;
@@ -77,6 +112,8 @@ export default class extends transformer {
                     }
                 }
 
+                elm.innerHTML = elm.innerHTML.replace("${this.secrets.br}","<br>");
+
                 return elm;
             }
 
@@ -89,7 +126,7 @@ export default class extends transformer {
             rootElm.replaceWith(newRoot);
 
             
-            setTimeout(() => {
+            window.addEventListener('load', () => {
                 const loadingCover = document.getElementById("sitefuscator-loading-cover");
                 const loadingTitle = document.getElementById("sitefuscator-loading-title");
 
@@ -104,13 +141,30 @@ export default class extends transformer {
                         if (loadingCover.style.opacity < 0) {
                             loadingCover.remove();
                             clearInterval(id);
+
+                            for (const script of scripts) {
+                                eval(script);
+                            }
+                        
+                            window.dispatchEvent(new Event("load"));
                         }
                     }
                 }, 100/10)
-            }, 600)
-        </script>
-    </head>
-</html>
-        `
+            }, { once: true })`
+
+            return minify(script).then(output => {
+                this.document.documentElement.innerHTML = `
+        <html>
+            <head>
+                <title>Loading...</title>
+                ${loadingCoverHTML}
+                <script>
+                    ${this.settings.minify ? output.code : script}
+                </script>
+            </head>
+        </html>
+                `
+            })
+
     }
 }
