@@ -1,6 +1,8 @@
 import { obfuscate } from "./obfuscator";
 import { updateJavascript } from "./postProcessor";
 import fs from "fs";
+import { minify } from "html-minifier-terser";
+import CleanCSS from "clean-css";
 
 function byteCount(s: any) {
     return encodeURI(s).split(/%..|./).length - 1;
@@ -27,8 +29,26 @@ async function init() {
 
     console.log("\nSIZE: " + byteCount(html) + " -> " + byteCount(output) + " bytes\n")
 
-    fs.writeFileSync("output/index.html", output[0]);
-    fs.writeFileSync("output/style.css", output[1]);
+    try {
+        const minifiedHTML = await minify(output[0], {
+            collapseWhitespace: true,
+            minifyJS: true,
+            minifyCSS: true,
+            collapseInlineTagWhitespace: true
+        });
+        const minifiedCSS = new CleanCSS().minify(output[1]).styles;
+        
+        fs.writeFileSync("output/index.html", minifiedHTML);
+        fs.writeFileSync("output/style.css", minifiedCSS);
+        console.log("Minified HTML and CSS sucesfully!");
+    } catch (e) {
+        console.error(e);
+        console.log("Failed to minify HTML and CSS defaulting to unminified...");
+
+        fs.writeFileSync("output/index.html", output[0]);
+        fs.writeFileSync("output/style.css", output[1]);
+    }
+
 
     const data = JSON.parse(output[2]);
 

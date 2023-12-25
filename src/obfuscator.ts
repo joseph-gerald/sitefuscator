@@ -87,7 +87,10 @@ const transformers = [
     // Finalising
 
 
-    new Transformer(bundleToLoader),
+    new Transformer(bundleToLoader, {
+        minify: true,
+        obfuscate: false
+    }),
 ]
 
 export async function obfuscate(input: { html: string, css: string }) {

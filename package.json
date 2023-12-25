@@ -13,7 +13,10 @@
   "dependencies": {
     "@types/css-tree": "^2.3.4",
     "@types/jsdom": "^21.1.6",
+    "@types/minify": "^9.1.4",
+    "clean-css": "^5.3.3",
     "css-tree": "^2.3.1",
+    "html-minifier-terser": "^7.2.0",
     "jsdom": "^23.0.1"
   },
   "devDependencies": {
