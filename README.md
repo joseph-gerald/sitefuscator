@@ -16,5 +16,6 @@ Obfuscate basic html and css web pages
 - [ ] Self defending
 - [ ] Resource Encryption
       
-- [ ] Javascript Loader
+- [x] Javascript Loader
 - [ ] Load Expiration
+- [ ] Obfuscated Loader
